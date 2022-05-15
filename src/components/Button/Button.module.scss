@@ -1,0 +1,14 @@
+@import "styles";
+
+.root {
+  border: none;
+  width: 160px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $c_primary;
+  color: $c_white;
+  border-radius: 6px;
+  cursor: pointer;
+}
