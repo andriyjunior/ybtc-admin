@@ -9,11 +9,13 @@ interface IAccordionProps {
   head: ReactNode;
   body: ReactNode;
   classNameHead?: string;
+  classNameBody?: string;
 }
 
 export const Accordion: FC<IAccordionProps> = ({
   head,
   body,
+  classNameBody,
   classNameHead,
 }) => {
   const [isShown, setShown] = useState(false);
@@ -26,7 +28,11 @@ export const Accordion: FC<IAccordionProps> = ({
       >
         {head}
       </div>
-      <div className={cn(styles.body, { [styles.isShown]: isShown })}>
+      <div
+        className={cn(styles.body, classNameBody, {
+          [styles.isShown]: isShown,
+        })}
+      >
         {body}
       </div>
     </>

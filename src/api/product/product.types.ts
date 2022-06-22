@@ -1,23 +1,20 @@
-import { TCategory } from "api/category";
+import { Response } from "api";
+import {
+  BrandDTO,
+  ColorDTO,
+  ProductDTO,
+  SizeProductDTO,
+  SubCategoryDTO,
+  CategoryDTO,
+} from "api";
 
-export type TSizeProduct = string;
-
-export interface IPostProductPayload {
-  brand: string;
-  category: string;
-  name: string;
-  color: string;
-  size: TSizeProduct[];
-  amount: number;
-  price: number;
+export interface IProductOptions {
+  categories: CategoryDTO[];
+  subCategories: SubCategoryDTO[];
+  brands: BrandDTO[];
+  colors: ColorDTO[];
+  sizes: SizeProductDTO[];
 }
 
-export interface ProductDTO {
-  category: TCategory;
-  name: string;
-  brand: string;
-  color: string;
-  size: TSizeProduct[];
-  amount: string;
-  price: string;
-}
+export type IProductOptionsResponse = Response<IProductOptions>;
+export type IProductResponse = Response<ProductDTO>;

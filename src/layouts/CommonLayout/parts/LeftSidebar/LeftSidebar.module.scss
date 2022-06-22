@@ -1,16 +1,20 @@
 @import "styles";
 
 .root {
-  width: 260px;
   height: 100vh;
   background-color: $c_dark;
 }
 
 .body {
-  padding: 0 34px;
-  padding-top: 60px;
+  // padding: 0 34px;
+  // padding-top: 60px;
 }
 
 .button:not(:last-child) {
   margin-bottom: 8px;
+}
+
+.links {
+  padding: 16px 0px;
+  background-color: $c_white;
 }

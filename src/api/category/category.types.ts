@@ -1,4 +1,3 @@
-export type TCategory = {
-  id: string;
-  name: string;
-};
+export interface IGetCategories {
+  withProducts?: boolean;
+}

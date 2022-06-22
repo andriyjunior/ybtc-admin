@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IPostProductPayload, postProduct, TCategory } from "api";
+import { postProduct, removeProduct, CategoryDTO } from "api";
 import axios from "axios";
+import { addNotification } from "helpers";
 import { IApiError, TLoading } from "store";
-import { setNotification } from "./app";
+import { setNotification } from "../app";
+import { tryGetCategoryById } from "../category";
 
 interface IInitialState {
   form?: {
     brand: string;
-    category: TCategory;
+    category: CategoryDTO;
     color: string;
     size: string[];
   };
@@ -22,19 +24,43 @@ const initialState: IInitialState = {
 
 export const tryPostProduct = createAsyncThunk(
   "product/postProduct",
-  async (body: IPostProductPayload, { rejectWithValue, dispatch }) => {
+  async (body: {}, { rejectWithValue, dispatch }) => {
     try {
       const response = await postProduct(body);
 
       if (response.status === 200) {
-        dispatch(setNotification({ title: "Success", status: "success" }));
+        addNotification({ dispatch, status: "success" });
         return response;
       }
     } catch (error) {
+      addNotification({ dispatch, status: "failed" });
       if (axios.isAxiosError(error)) {
-        dispatch(setNotification({ title: "Not valid", status: "failed" }));
-
         return rejectWithValue(error.response?.data);
+      }
+    }
+  }
+);
+
+export const tryRemoveProduct = createAsyncThunk(
+  "product/removeProduct",
+  async (id: string, { rejectWithValue, dispatch, getState }: any) => {
+    const state = await getState();
+
+    try {
+      addNotification({
+        dispatch,
+        status: "success",
+        customMsg: "Successfully removed",
+      });
+      const response = await removeProduct(id);
+
+      dispatch(tryGetCategoryById(state.category.category.id));
+
+      return response;
+    } catch (err) {
+      addNotification({ dispatch, status: "failed" });
+      if (axios.isAxiosError(err)) {
+        rejectWithValue(err.response?.data);
       }
     }
   }

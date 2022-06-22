@@ -1,8 +1,5 @@
 import { endpoints, request } from "utils";
-
-interface IGetCategories {
-  withProducts?: boolean;
-}
+import { IGetCategories } from "./category.types";
 
 export const getCategories = ({ withProducts = false }: IGetCategories) => {
   return request.get(`${endpoints.category}/?withProducts=${withProducts}`);

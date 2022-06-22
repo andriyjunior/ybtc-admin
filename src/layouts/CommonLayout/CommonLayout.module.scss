@@ -1,9 +1,13 @@
 .root {
-  display: flex;
+  // display: flex;
 }
 
 .notifications {
   position: fixed;
   top: 16px;
   right: 16px;
+}
+
+.content {
+  width: 100%;
 }

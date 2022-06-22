@@ -1,14 +1,17 @@
 import { FC } from "react";
+import { Form, Input as AntInput } from "antd";
 
 import styles from "./Input.module.scss";
+import { Rule } from "antd/lib/form";
 
 interface IInputProps {
   label: string;
-  value: string | number;
+  value?: string | number;
   type?: "text" | "number";
   placeholder: string;
   name: string;
   onChange: ({ x: value }: { [x: string]: string }) => void;
+  rules?: Rule[];
 }
 
 export const Input: FC<IInputProps> = ({
@@ -17,21 +20,18 @@ export const Input: FC<IInputProps> = ({
   placeholder,
   name,
   onChange,
-  ...rest
+  rules,
+  type = "text",
 }) => {
   return (
-    <div className={styles.root}>
-      <label className={styles.label} htmlFor="">
-        {label}
-      </label>
-      <input
-        className={styles.input}
-        type="text"
-        placeholder={placeholder}
+    <Form.Item label={label} name={name} rules={rules}>
+      <AntInput
+        defaultValue={value}
+        type={type}
+        onChange={(e) => onChange({ name: e.target.value })}
         value={value}
-        onChange={(e) => onChange({ [name]: e.target.value })}
-        {...rest}
+        placeholder={placeholder}
       />
-    </div>
+    </Form.Item>
   );
 };

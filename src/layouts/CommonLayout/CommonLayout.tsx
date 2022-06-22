@@ -1,3 +1,6 @@
+import { Layout } from "antd";
+import { Content, Header } from "antd/lib/layout/layout";
+import { Typography } from "antd";
 import { Notification } from "components";
 import { FC, ReactNode } from "react";
 import { selectApp, useAppSelector } from "store";
@@ -13,17 +16,20 @@ export const CommonLayout: FC<ICommonLayoutProps> = ({ children }) => {
   const { notifications } = useAppSelector(selectApp);
 
   return (
-    <div className={styles.root}>
-      <div className={styles.leftSidebar}>
+    <Layout>
+      <div className={styles.root}>
+        <Header>
+          <Typography.Text style={{ color: "white" }}>Admin</Typography.Text>
+        </Header>
         <LeftSidebar />
+        <Content style={{ display: "flex" }}>{children}</Content>
+        <AddProductLink />
+        <div className={styles.notifications}>
+          {notifications.map((item) => (
+            <Notification {...item} />
+          ))}
+        </div>
       </div>
-      <div className={styles.content}>{children}</div>
-      <AddProductLink />
-      <div className={styles.notifications}>
-        {notifications.map((item) => (
-          <Notification {...item} />
-        ))}
-      </div>
-    </div>
+    </Layout>
   );
 };

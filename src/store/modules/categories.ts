@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getCategories, TCategory } from "api";
+import { getCategories, CategoryDTO } from "api";
 import { IApiError, TLoading } from "store/store.types";
 
 interface IInitialState {
-  categories?: TCategory[];
+  categories?: CategoryDTO[];
   isLoading: TLoading;
   success?: boolean;
   error: IApiError | null;
@@ -33,9 +33,11 @@ const categorySlice = createSlice({
     });
     builder.addCase(tryGetCategories.fulfilled, (state, { payload }) => {
       state.categories = [];
+
       payload.data.forEach((item: any) => {
-        state.categories?.push({ id: item._id, name: item.name });
+        state.categories?.push({ _id: item._id, name: item.name });
       });
+
       state.isLoading = "fulfilled";
     });
   },
