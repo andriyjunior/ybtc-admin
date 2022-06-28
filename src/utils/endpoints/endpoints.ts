@@ -5,4 +5,10 @@ export const endpoints = {
   productOptions: "product-options",
   category: "category",
   subCategory: (id: string) => `sub-category/${id}`,
+
+  page: "page",
+  pages: "pages",
+  pageByName: function (name: string) {
+    return `${this.page}/${name}`;
+  },
 };

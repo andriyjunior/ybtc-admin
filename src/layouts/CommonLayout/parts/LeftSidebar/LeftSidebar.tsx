@@ -1,72 +1,98 @@
-import { Menu, MenuProps } from "antd";
 import { Link } from "react-router-dom";
-import Sider from "antd/lib/layout/Sider";
 import { FC, useEffect, useState } from "react";
-import { selectCategories, selectProductOptions, useAppSelector } from "store";
+
+import PagesIcon from "@mui/icons-material/Pages";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import styles from "./LeftSidebar.module.scss";
-import { getInitialOptions } from "api/initial";
-import { CategoryDTO } from "api";
 
-interface ILeftSidebarProps {}
+import { getPages } from "api";
+import { PageDTO } from "api";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  AppBar,
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  Menu,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { NavLink } from "react-router-dom";
 
-export const LeftSidebar: FC<ILeftSidebarProps> = () => {
-  const [data, setData] = useState<{
-    categories: CategoryDTO[];
-    loading: boolean;
-  }>({ categories: [], loading: true });
+interface ILeftSidebarProps {
+  isOpen: boolean;
+  setOpen: (value: boolean) => void;
+}
+
+export const LeftSidebar: FC<ILeftSidebarProps> = ({ isOpen, setOpen }) => {
+  const [data, setData] = useState<{ pages: PageDTO[]; isLoading: boolean }>({
+    pages: [],
+    isLoading: true,
+  });
 
   useEffect(() => {
     const fetch = async () => {
-      const response = await getInitialOptions();
-      setData({ ...data, categories: response.data.data, loading: false });
+      const response = await getPages();
+
+      if (response.status === 200) {
+        setData({ pages: response.data.data, isLoading: false });
+      }
     };
 
     fetch();
   }, []);
-  console.log(data.categories);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Sider
-      style={{ float: "left", position: "sticky", top: 0 }}
-      collapsible
-      width={300}
-    >
-      <div className={styles.root}>
-        <div className={styles.body}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            style={{ height: "100%", borderRight: 0 }}
-          >
-            <Menu.SubMenu title={<Link to="#">Категорії</Link>}>
-              {data?.categories?.map((category) => (
-                <Menu.SubMenu
-                  key={category._id}
-                  title={
-                    <Link to={`category/${category._id}`}>{category.name}</Link>
-                  }
+    <Paper elevation={12} className={styles.root}>
+      <Accordion defaultExpanded>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Pages</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {data.pages.map(({ route }) => {
+            return (
+              <NavLink
+                key={route}
+                onClick={handleClose}
+                to={`pages/edit/${route}`}
+              >
+                <Button
+                  variant="outlined"
+                  sx={{
+                    mb: 1,
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                  }}
                 >
-                  {category.subCategories?.map((subCategory) => (
-                    <Menu.Item key={subCategory._id}>
-                      <Link to={`category/${category._id}/${subCategory._id}`}>
-                        {subCategory.name}
-                      </Link>
-                    </Menu.Item>
-                  ))}
-                </Menu.SubMenu>
-              ))}
-            </Menu.SubMenu>
-            <Menu.SubMenu title="Замовлення">
-              {/* {categories?.map((category) => (
-                <Menu.Item key={category.id}>
-                  <Link to={`categories/${category.id}`}>{category.name}</Link>
-                </Menu.Item>
-              ))} */}
-            </Menu.SubMenu>
-          </Menu>
-        </div>
-      </div>
-    </Sider>
+                  {route}
+                </Button>
+              </NavLink>
+            );
+          })}
+          <NavLink key={"add"} to={`pages/add`}>
+            <Button
+              variant="outlined"
+              sx={{ mb: 1, display: "block", width: "100%", textAlign: "left" }}
+            >
+              Add new
+            </Button>
+          </NavLink>
+        </AccordionDetails>
+      </Accordion>
+    </Paper>
   );
 };

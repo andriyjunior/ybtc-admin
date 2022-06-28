@@ -1,4 +1,2 @@
-export * from "./category";
-export * from "./product";
-export * from "./sub-category";
+export * from "./page";
 export * from "./api.types";
