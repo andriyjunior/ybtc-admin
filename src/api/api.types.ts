@@ -1,5 +1,5 @@
 export type TObjectId = {
-  _id: string;
+  _id?: string;
 };
 
 export type Response<T> = {
@@ -20,4 +20,11 @@ export interface PageDTO extends TObjectId {
     description: ILang;
   };
   body: ILang;
+}
+
+export interface UserDTO {
+  name: string;
+  password: string;
+  roles: string[];
+  accessToken: string;
 }

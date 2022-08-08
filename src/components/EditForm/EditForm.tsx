@@ -128,7 +128,7 @@ export const EditForm: FC<IEditPageProps> = ({ page, onSubmit }) => {
           Body UA
         </Typography>
         <Editor
-          value={formData.body?.ua}
+          value={formData.body?.ua.trim()}
           onChange={(value) => handleOnStateChange({ ua: value }, KeyEnum.Body)}
         />
       </Box>

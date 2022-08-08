@@ -1,76 +1,35 @@
-import { Link } from "react-router-dom";
-import { FC, useEffect, useState } from "react";
-
-import PagesIcon from "@mui/icons-material/Pages";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-import styles from "./LeftSidebar.module.scss";
+import { memo } from "react";
 
 import { getPages } from "api";
 import { PageDTO } from "api";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  AppBar,
-  Box,
-  Button,
-  Drawer,
-  IconButton,
-  Menu,
-  Paper,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Skeleton } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import { useQuerry } from "hooks";
 
-interface ILeftSidebarProps {
-  isOpen: boolean;
-  setOpen: (value: boolean) => void;
-}
+export const LeftSidebar = memo(() => {
+  const { isLoading, data, error } = useQuerry<PageDTO[]>(getPages);
 
-export const LeftSidebar: FC<ILeftSidebarProps> = ({ isOpen, setOpen }) => {
-  const [data, setData] = useState<{ pages: PageDTO[]; isLoading: boolean }>({
-    pages: [],
-    isLoading: true,
-  });
+  if (isLoading) {
+    return <Skeleton variant="rectangular" width={268} height={"100vh"} />;
+  }
 
-  useEffect(() => {
-    const fetch = async () => {
-      const response = await getPages();
-
-      if (response.status === 200) {
-        setData({ pages: response.data.data, isLoading: false });
-      }
-    };
-
-    fetch();
-  }, []);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  if (error) {
+    return <span>Error</span>;
+  }
 
   return (
-    <Paper elevation={12} className={styles.root}>
-      <Accordion defaultExpanded>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>Pages</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {data.pages.map(({ route }) => {
+    <Paper
+      elevation={12}
+      style={{ position: "sticky", top: 65, width: 250, paddingLeft: 16, height: "100vh" }}
+    >
+      <Box style={{}}>
+        {data &&
+          data.map(({ route }) => {
             return (
-              <NavLink
-                key={route}
-                onClick={handleClose}
-                to={`pages/edit/${route}`}
-              >
+              <NavLink key={route} to={`/pages/edit/${route}`}>
                 <Button
-                  variant="outlined"
+                  variant="text"
+                  color="primary"
                   sx={{
                     mb: 1,
                     display: "block",
@@ -83,16 +42,22 @@ export const LeftSidebar: FC<ILeftSidebarProps> = ({ isOpen, setOpen }) => {
               </NavLink>
             );
           })}
-          <NavLink key={"add"} to={`pages/add`}>
-            <Button
-              variant="outlined"
-              sx={{ mb: 1, display: "block", width: "100%", textAlign: "left" }}
-            >
-              Add new
-            </Button>
-          </NavLink>
-        </AccordionDetails>
-      </Accordion>
+        <NavLink key={"add"} to={`/pages/add`}>
+          <Button
+            variant="text"
+            color="secondary"
+            style={{ marginTop: `48px` }}
+            sx={{
+              mb: 1,
+              display: "block",
+              width: "100%",
+              textAlign: "left",
+            }}
+          >
+            Add new
+          </Button>
+        </NavLink>
+      </Box>
     </Paper>
   );
-};
+});

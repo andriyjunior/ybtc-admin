@@ -1,47 +1,49 @@
 import { FC, useEffect, useState } from "react";
 import { MainLayout } from "layouts";
-import { EditForm } from "components";
+import { EditForm, Loader, Toast } from "components";
 import { useParams } from "react-router-dom";
-import { KeyEnum } from "../types";
 import { getPage, PageDTO, putPage } from "api";
+import { useQuerry } from "hooks";
+import { Snackbar } from "@mui/material";
 
 interface IEditPageProps {}
 
-const initialState = {
-  route: "",
-  meta: {
-    title: { en: "", ua: "" },
-    description: { en: "", ua: "" },
-  },
-  body: { en: "", ua: "" },
-};
+enum StatusEnum {
+  Success,
+  Error,
+}
 
 export const EditPage: FC<IEditPageProps> = () => {
-  const [data, setData] = useState<PageDTO>();
-  const [isLoading, setLoading] = useState(true);
-
   const { name } = useParams();
 
-  useEffect(() => {
+  const { data, isLoading } = useQuerry<PageDTO>(getPage, name);
+  const [status, setStatus] = useState<StatusEnum | null>(null);
+
+  const handleSubmit = (value) => {
     if (name) {
-      const fetchData = async () => {
-        setLoading(true);
-
-        const response = await getPage(name);
-        setData(response.data.data);
-        setLoading(false);
-      };
-
-      fetchData();
+      putPage(name, value)
+        .then(() => setStatus(StatusEnum.Success))
+        .catch(() => setStatus(StatusEnum.Error));
     }
-  }, [name]);
+  };
 
   return (
     <MainLayout>
-      {isLoading && "Loading"}
-      {!isLoading && name && (
-        <EditForm onSubmit={(value) => putPage(name, value)} page={data} />
+      {isLoading && <Loader />}
+      {status === StatusEnum.Success && (
+        <Toast
+          message="Has been updated :)"
+          open={status === StatusEnum.Success}
+        />
       )}
+      {status === StatusEnum.Error && (
+        <Toast
+          message="Something went wrong :("
+          open={status === StatusEnum.Error}
+        />
+      )}
+
+      {data && name && <EditForm onSubmit={handleSubmit} page={data} />}
     </MainLayout>
   );
 };
