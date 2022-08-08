@@ -1,14 +1,12 @@
 export const endpoints = {
   initial: "initial",
-  product: "product",
-  productById: (id: string) => `product/${id}`,
-  productOptions: "product-options",
-  category: "category",
-  subCategory: (id: string) => `sub-category/${id}`,
-
+  auth: {
+    signIn: "auth/signin",
+    signUp: "auth/signup",
+  },
   page: "page",
   pages: "pages",
-  pageByName: function (name: string) {
+  pageByName(name: string) {
     return `${this.page}/${name}`;
   },
 };

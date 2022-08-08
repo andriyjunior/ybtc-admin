@@ -1,3 +1,4 @@
+import { CommonLayout } from "layouts/CommonLayout";
 import { ReactNode } from "react";
 import { FC } from "react";
 

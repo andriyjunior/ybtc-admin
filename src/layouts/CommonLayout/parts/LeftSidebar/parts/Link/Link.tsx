@@ -13,6 +13,7 @@ export const Link: FC<ILinkProps> = ({ title, to }) => {
   return (
     <NavLink
       to={to}
+      replace
       className={({ isActive }) =>
         cn(styles.root, { [styles.isActive]: isActive })
       }

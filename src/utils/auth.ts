@@ -1,13 +1,8 @@
-const { REACT_APP_TOKEN, REACT_APP_PASSWORD } = process.env;
+const TOKEN_NAME = "jwt-access-token";
 
-export const isAuth = () => {
-  if (window.localStorage.getItem("token") === REACT_APP_TOKEN) {
-    return true;
-  }
+export const getToken = () => window.localStorage.getItem(TOKEN_NAME);
 
-  if (prompt("Enter your password") === REACT_APP_PASSWORD) {
-    window.localStorage.setItem("token", REACT_APP_TOKEN!);
-  } else {
-    isAuth();
-  }
-};
+export const setToken = (token) =>
+  window.localStorage.setItem(TOKEN_NAME, token);
+
+export const clearToken = () => window.localStorage.removeItem(TOKEN_NAME);
