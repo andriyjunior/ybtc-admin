@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { getPage, PageDTO, putPage } from "api";
 import { useQuerry } from "hooks";
 import { Snackbar } from "@mui/material";
+import { checkOnRole } from "utils";
+import { selectUser, useAppSelector } from "store";
 
 interface IEditPageProps {}
 
@@ -13,17 +15,38 @@ enum StatusEnum {
   Error,
 }
 
+const clearToast = (setStatus: (value: null) => void) => {
+  setTimeout(() => setStatus(null), 2500);
+};
+
 export const EditPage: FC<IEditPageProps> = () => {
   const { name } = useParams();
+  const user = useAppSelector(selectUser);
 
   const { data, isLoading } = useQuerry<PageDTO>(getPage, name);
   const [status, setStatus] = useState<StatusEnum | null>(null);
 
   const handleSubmit = (value) => {
-    if (name) {
-      putPage(name, value)
-        .then(() => setStatus(StatusEnum.Success))
-        .catch(() => setStatus(StatusEnum.Error));
+    if (!user.data?.roles) return;
+
+    if (
+      checkOnRole.isModerator(user.data?.roles) &&
+      checkOnRole.isAdmin(user.data?.roles)
+    ) {
+      if (name) {
+        putPage(name, value)
+          .then(() => {
+            setStatus(StatusEnum.Success);
+            clearToast(setStatus);
+          })
+          .catch(() => {
+            setStatus(StatusEnum.Error);
+            clearToast(setStatus);
+          });
+      }
+    } else {
+      setStatus(StatusEnum.Error);
+      clearToast(setStatus);
     }
   };
 
