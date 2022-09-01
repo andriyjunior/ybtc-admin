@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { getToken } from "utils/auth";
 
 interface IAuth {
-  mode: "signIn" | "signUp";
+  mode?: "signIn" | "signUp";
 }
 
 interface IForm {
@@ -23,7 +23,7 @@ interface IForm {
   password: HTMLInputElement;
 }
 
-const Auth: React.FC<IAuth> = ({ mode }) => {
+const Auth: React.FC<IAuth> = ({ mode = "signIn" }) => {
   const dispatch = useAppDispatch();
   const [authMode, setAuthMode] = useState(mode);
 
@@ -133,11 +133,11 @@ const Auth: React.FC<IAuth> = ({ mode }) => {
           </Button>
           <Grid container>
             <Grid item>
-              <Button onClick={handleToggleMode}>
+              {/* <Button onClick={handleToggleMode}>
                 {authMode === "signIn"
                   ? "Don't have an account? Sign Up"
                   : "Do you have an account? Sign In"}
-              </Button>
+              </Button> */}
             </Grid>
           </Grid>
         </Box>
